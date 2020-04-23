@@ -3,14 +3,28 @@ const Cart = require('../models').Cart
 const Item = require('../models').Item
 const formatMoney = require('../helpers/formatMoney')
 const nodemailer = require('nodemailer')
-const fs = require('fs')
-const mustache = require('mustache')
 
 class CartController{
-    static sendEmail(emailReciept, obj){
-        // const template = fs.readFileSync('./template', 'utf8');
-        // console.log(obj)
-        let transporter = nodemailer.createTransport({
+    static sendEmail(emailReciept, arr, total){
+        let templates = `<b>
+                            <table style="border: 1px solid #ddd;text-align: left; border-collapse: collapse;">
+                                <tr>
+                                    <th style="border: 1px solid #ddd;text-align: left; padding: 15px; text-align: center;">Item</th>
+                                    <th style="border: 1px solid #ddd;text-align: left; padding: 15px; text-align: center;">Jumlah</th>
+                                </tr>
+                                `
+        for(let i = 0; i < arr.length; i++){
+            templates += `  <tr>    
+                                <td style="border: 1px solid #ddd;text-align: left; padding: 15px; text-align: center;">${arr[i].name}</td>
+                                <td style="border: 1px solid #ddd;text-align: left; padding: 15px; text-align: center;">${arr[i].amount}</td>
+                            </tr>`
+        }
+        templates += `<tr>    
+            <td style="border: 1px solid #ddd;text-align: left; padding: 15px; text-align: right; font-weight : bold">Total : </td>
+            <td style="border: 1px solid #ddd;text-align: left; padding: 15px; text-align: center;">${formatMoney(total)}</td>
+            </tr></table></b>`
+        
+            let transporter = nodemailer.createTransport({
             service: 'gmail',
             auth : {
                 user: 'pairprojectP1',
@@ -21,7 +35,7 @@ class CartController{
             from: 'pairprojectP1',
             to: emailReciept,
             subject: 'Thankyou for your purchase at Toko Online',
-            text: 'See you again'
+            html: templates
         }
 
         transporter.sendMail(mailOptions, function(err, data) {
@@ -66,14 +80,16 @@ class CartController{
                 }
                 if(excItem.length === 0){
                     let dataObj = []
+                    let totalCart = 0
                     for(let i = 0; i < data.Items.length; i++){
                         dataObj.push({
                             id: data.Items[i].id,
                             name: data.Items[i].name,
-                            tag : data.Items[i].tag,
                             stock : data.Items[i].stock - data.Items[i].Cart.amount,
-                            price : data.Items[i].price
+                            price : data.Items[i].price,
+                            amount : data.Items[i].Cart.amount
                         })
+                        totalCart += data.Items[i].Cart.amount * data.Items[i].price
                     }
                     Item.bulkCreate(dataObj, { updateOnDuplicate: ["stock"] })
                     .then( () => {
@@ -87,7 +103,7 @@ class CartController{
                         return User.findByPk(req.session.userId)
                     })
                     .then( data => {
-                        CartController.sendEmail(data.email, dataObj)
+                        CartController.sendEmail(data.email, dataObj, totalCart)
                         const msg = `Belanja berhasil. Silahkan ditunggu untuk dikirimkan`
                         res.redirect(`/store?msg=${msg}&type=success`)
                     })
