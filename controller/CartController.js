@@ -6,7 +6,7 @@ const nodemailer = require('nodemailer')
 
 class CartController{
     static sendEmail(emailReciept, arr, total){
-        let templates = `<b>
+        let templates = `<b> <h3> Daftar belanjaan online </h3>
                             <table style="border: 1px solid #ddd;text-align: left; border-collapse: collapse;">
                                 <tr>
                                     <th style="border: 1px solid #ddd;text-align: left; padding: 15px; text-align: center;">Item</th>
