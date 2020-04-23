@@ -1,0 +1,62 @@
+<%- include('./partial/header') %>
+
+<div class="container-fluid p-5">
+    <% if(alert.msg){ %>
+      <div class="alert alert-danger mb-2" role="alert">
+          <%= alert.msg %>
+      </div>
+    <% } %>
+      <table class="table">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">Product</th>
+              <th scope="col">Price</th>
+              <th scope="col">Amount</th>
+              <th scope="col">Subtotal</th>
+              <th scope="col"></th>
+          </tr>
+      </thead>
+      <tbody>
+          <% let total = 0 %>
+          <% for(let i = 0; i < data.Items.length; i++){ %>
+              <tr>
+                  <td><%= data.Items[i].name %></td>
+                  <td><%= formatMoney(data.Items[i].price) %></td>
+                  <td><%= data.Items[i].Cart.amount %></td>
+                  <td><%= formatMoney(data.Items[i].price * data.Items[i].Cart.amount) %></td>
+                  <td><a href="/cart/delete/<%= data.Items[i].id %>"><button type="button" class="btn btn-danger">Delete</button></a></td>
+                  <% total += data.Items[i].price * data.Items[i].Cart.amount %>                        
+              </tr>
+              <% } %>
+              <tr>
+                  <th scope="col" colspan="3" text-right>Total</th>
+                  <% if(total > 0){ %>
+                    <td><%= formatMoney(total) %></td>
+                  <% } %>
+              </tr>
+          </tbody>
+      </table>
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Checkout</button>
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Notification</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                  Do you want to checkout your cart ?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a href="/cart/checkout"><button type="button" class="btn btn-success">Confirm</button></a>
+              </div>
+            </div>
+          </div>
+      </div>
+  </div>
+
+<%- include('./partial/footer') %>
+

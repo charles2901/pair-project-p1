@@ -1,0 +1,59 @@
+<%- include('./partial/header') %>
+<% if(alert.msg){ %>
+    <div class="alert alert-success" role="alert">
+        <%= alert.msg %>
+    </div>
+<% } %>
+<% for(let i = 0; i < data.length; i++){ %>
+    <% if(i % 4 === 0){ %>
+        <div class="row">
+    <% } %>
+    <% if(i === data.length-1){ %>
+    <% } %>
+    <div class="card text-center p-2" style="width: 12rem;">
+        <p class="card-text"><%= data[i].name %></p>
+        <img class="card-img-top" src="<%= data[i].path %>" alt="Card image cap">
+        <div class="card-body">
+            <p class="card-text"><%= formatMoney(data[i].price) %></p>
+            <p class="card-text">Stocks : <%= data[i].stock %></p>
+            <form action="/store/addToCart/<%= data[i].id %>" method="POST">
+                <div class="form-group">
+                    <div class="container mb-3">
+                        <input name="ItemId" type="number" value="<%= data[i].id %>" hidden/>
+                        <input name="amount" type="number" min="1" max="<%= data[i].stock %>" step="1" placeholder="amount" />
+                    </div>
+                    <button type="submit" class="btn btn-primary" <%= data[i].stock === 0 ? 'disabled' : '' %>>Add to Cart</button>
+                </div>
+            </form>    
+        </div>
+    </div>
+    <% if(i % 4 === 3){ %>
+        </div>
+    <% } %>
+<% } %>
+
+<!-- <div class="row">
+    <% for(let i = 0; i < data.length; i++){ %>
+        <div class="card text-center p-2" style="width: 12rem;">
+            <p class="card-text"><%= data[i].name %></p>
+            <img class="card-img-top" src="<%= data[i].path %>" alt="Card image cap">
+            <div class="card-body">
+                <p class="card-text"><%= formatMoney(data[i].price) %></p>
+                <p class="card-text">Stocks : <%= data[i].stock %></p>
+                <form action="/store/addToCart/<%= data[i].id %>" method="POST">
+                    <div class="form-group">
+                        <div class="container mb-3">
+                            <input name="ItemId" type="number" value="<%= data[i].id %>" hidden/>
+                            <input name="amount" type="number" min="1" max="<%= data[i].stock %>" step="1" placeholder="amount" />
+                        </div>
+                        <button type="submit" class="btn btn-primary" <%= data[i].stock === 0 ? 'disabled' : '' %>>Add to Cart</button>
+                    </div>
+                </form>    
+            </div>
+        </div>
+    <% } %>
+</div> -->
+
+
+<%- include('./partial/footer') %>
+
