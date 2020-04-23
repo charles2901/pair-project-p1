@@ -9,15 +9,15 @@ class CartController{
         let transporter = nodemailer.createTransport({
             service: 'gmail',
             auth : {
-                user: '',
-                pass: ''
+                user: 'pairprojectP1',
+                pass: 'Pairproject123'
             }
         })
         let mailOptions = {
-            from: '',
+            from: 'pairprojectP1',
             to: emailReciept,
             subject: 'Thankyou for your purchase at Toko Online',
-            text: ''
+            text: 'See you again'
         }
 
         transporter.sendMail(mailOptions, function(err, data) {
