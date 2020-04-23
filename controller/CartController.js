@@ -2,9 +2,30 @@ const User = require('../models').User
 const Cart = require('../models').Cart
 const Item = require('../models').Item
 const formatMoney = require('../helpers/formatMoney')
-
+const nodemailer = require('nodemailer')
 
 class CartController{
+    static sendEmail(emailReciept, text){
+        let transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth : {
+                user: '',
+                pass: ''
+            }
+        })
+        let mailOptions = {
+            from: '',
+            to: emailReciept,
+            subject: 'Thankyou for your purchase at Toko Online',
+            text: ''
+        }
+
+        transporter.sendMail(mailOptions, function(err, data) {
+            if(err) console.log('Error sending email')
+            else console.log('Email sent')
+        })
+    }
+
     static page(req, res){
         const alert = req.query
         User.findOne({
@@ -59,8 +80,12 @@ class CartController{
                         })
                     })
                     .then( () => {
+                        return User.findByPk(req.session.userId)
+                    })
+                    .then( data => {
+                        CartController.sendEmail(data.email)
                         const msg = `Belanja berhasil. Silahkan ditunggu untuk dikirimkan`
-                        res.redirect(`/store?msg=${msg}`)
+                        res.redirect(`/store?msg=${msg}&type=success`)
                     })
                 } else {
                     const msg = `${excItem.join(', ')} melebihi stock yang ada`

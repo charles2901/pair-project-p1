@@ -16,7 +16,12 @@ class StoreController{
     }
 
     static addToCartPost(req, res){
-        let numAdded
+        if(Number(req.body.amount) === 0){
+            req.body.amount = 1
+        } else  if(isNaN(req.body.amount) || Number(req.body.amount) < 0){
+            const msg = 'Invalid input amount'
+            res.redirect(`/store?msg=${msg}&type=danger`)
+        }
         Cart.findOne({
             where: {
                 ItemId : req.body.ItemId
@@ -24,11 +29,8 @@ class StoreController{
         })
         .then( obj => {
             if(obj){
-                if(Number(req.body.amount) === 0){
-                    numAdded = 1
-                }
                 return Cart.update({
-                    amount : obj.amount + numAdded
+                    amount : obj.amount + Number(req.body.amount)
                 }, {
                     where : {
                         ItemId : req.body.ItemId,
@@ -36,19 +38,16 @@ class StoreController{
                     }
                 })
             } else {
-                if(Number(req.body.amount) === 0){
-                    numAdded = 1
-                }
                 Cart.create({
                     UserId : req.session.userId,
                     ItemId : req.body.ItemId,
-                    amount : numAdded
+                    amount : Number(req.body.amount)
                 })
             }
         })
         .then( () => {
             const msg = `Barang berhasil ditambahkan`
-            res.redirect(`/store?msg=${msg}`)
+            res.redirect(`/store?msg=${msg}&type=success`)
         })
         .catch( err => {
             res.send(err)

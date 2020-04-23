@@ -44,6 +44,38 @@ module.exports = {
         path : '/img/gandumsegitigabiru.jpg',
         createdAt : new Date(),
         updatedAt : new Date()
+      },
+      {
+        name: 'Minyak Bimoli',
+        stock : 99,
+        price : 10500,
+        path : '/img/minyakbimoli.jpg',
+        createdAt : new Date(),
+        updatedAt : new Date()
+      },
+      {
+        name: 'Jeruk',
+        stock : 100,
+        price : 9000,
+        path : '/img/jeruk.jpg',
+        createdAt : new Date(),
+        updatedAt : new Date()
+      },
+      {
+        name: 'Beras Sumo',
+        stock : 75,
+        price : 14000,
+        path : '/img/berassumo.jpg',
+        createdAt : new Date(),
+        updatedAt : new Date()
+      },
+      {
+        name: 'Kacang Dua Kelinci',
+        stock : 25,
+        price : 7000,
+        path : '/img/kacangkelinci.jpg',
+        createdAt : new Date(),
+        updatedAt : new Date()
       }
 
     ], {});
