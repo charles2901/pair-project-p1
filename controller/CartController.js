@@ -3,9 +3,13 @@ const Cart = require('../models').Cart
 const Item = require('../models').Item
 const formatMoney = require('../helpers/formatMoney')
 const nodemailer = require('nodemailer')
+const fs = require('fs')
+const mustache = require('mustache')
 
 class CartController{
-    static sendEmail(emailReciept, text){
+    static sendEmail(emailReciept, obj){
+        // const template = fs.readFileSync('./template', 'utf8');
+        // console.log(obj)
         let transporter = nodemailer.createTransport({
             service: 'gmail',
             auth : {
@@ -83,7 +87,7 @@ class CartController{
                         return User.findByPk(req.session.userId)
                     })
                     .then( data => {
-                        CartController.sendEmail(data.email)
+                        CartController.sendEmail(data.email, dataObj)
                         const msg = `Belanja berhasil. Silahkan ditunggu untuk dikirimkan`
                         res.redirect(`/store?msg=${msg}&type=success`)
                     })
